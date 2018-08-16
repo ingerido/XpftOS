@@ -1,0 +1,5 @@
+7c00 - 7e00: boot sector
+7e00 - 8000: setup
+8000:		 phy mm map
+ ...
+100000: 	 kernel starts

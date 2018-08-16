@@ -1,0 +1,169 @@
+	# move loader from 0x1000:0x0000 to 0x0000:0x0000
+move:
+	cld
+	movw	$SYSSEG, %ax
+	movw	%ax, %ds
+	movw	$ZEROSEG, %ax
+	movw	%ax, %es
+	xorw	%si, %si
+	xorw	%di, %di
+	movw	$0x80, %cx			# movsl moves 4 bytes, so need 512/4=128 here
+	rep
+	movsl
+
+end_move:
+	movw	%cs, %ax
+	movw	%ax, %ds
+	movw	%ax, %es
+
+
+
+
+
+	# now entering unreal mode
+	andb	$0xfe, %al
+	movl	%eax, %cr0
+	ljmp	$ZEROSEG, $unreal
+
+unreal:
+
+	sti
+
+	movw 	%cs, %ax
+	movw 	%ax, %ds
+	movw 	%ax, %es
+	movw 	%ax, %ss	
+
+	movw 	$msg2, %bp
+	movw 	$0x0018, %cx
+	movw 	$0x1301, %ax
+	movw 	$0x0007, %bx
+	movw	$0x0B00, %dx
+	int		$0x10
+
+	jmp		.
+
+
+
+
+
+	movw $0x3D4, %dx       # Tell the control I/O port to get the higher byte of
+	movb $0x0E, %al        # the cursor offset
+	out  %al, %dx
+	movw $0x3D5, %dx       # Switch to data I/O port
+	in   %dx, %al          # Get the cursor offset's higher byte
+	movb %al, %ah
+
+	movw $0x3D4, %dx       # Tell the control I/O port to get the lower byte of
+	movb $0x0F, %al        # the cursor offset
+	out  %al, %dx
+	movw $0x3D5, %dx       # Switch to data I/O port
+	in   %dx, %al          # Get the lower byte
+
+	imul $2, %ax
+
+
+
+	#lss		_stack_start, %esp
+	xorl	%eax,%eax
+1:	incl	%eax							# check that A20 really IS enabled
+	movl	%eax, 0x00000000
+	cmpl	%eax, 0x00100000
+	je		1b
+	
+	movl	%cr0, %eax				
+	andl	$0x80000001, %eax				# Set Paging and Protected Enabled bit in CR0
+	movl	%eax, %cr0
+	#jmp		goto_main						# jump to main after setting up paging
+	jmp		.
+
+	# Setup Interrupt Descriptor Table
+# Interrupt Descriptor Entry (8 Byte)
+# |+++++++++   BIT 63 - 48  +++++++++|+++++++++  BIT 47 - 32  +++++++++|
+# | Interrupt handler offset 31 - 16 |         Interrupt Gate          |   
+# |----------------------------------|---------------------------------|  
+# |      Target Segment Selector     | Interrupt handler offset 15 - 0 |   
+# |+++++++++   BIT 31 - 15  +++++++++|+++++++++  BIT 15 - 0  ++++++++++| 
+
+setup_idt:
+	leal	default_int, %edx
+	movl	$0x00080000, %eax
+	movw 	%dx, %ax		
+	movw	$0x8e00, %dx	
+	leal	_idt, %edi
+	movl	$0x100, %ecx
+rp_setidt:
+	movl	%eax,(%edi)
+	movl	%edx,4(%edi)
+	addl	$0x08,%edi
+	dec		%ecx
+	jne		rp_setidt
+	lidt	idt_descr
+	ret
+
+	# Setup Global Descriptor Table
+setup_gdt:
+	lgdt	gdt_descr
+	ret
+
+setup_paging:
+	movl	$0x400*3, %ecx
+	xorl	%eax, %eax
+	xorl	%edi, %edi						# pg_dir is at 0x0
+	cld
+	rep
+	stosl
+	movl	$_pt0+7, _pg_dir				# set present bit/user r/w
+	movl	$_pt1+7, _pg_dir+4
+	movl	$_pt1+4092, %edi
+	movl	$0x7ff007, %eax					# 8Mb - 4096 + 7 (r/w user,p)
+	std
+1:	stosl									# fill pages table entries
+	subl	$0x1000, %eax
+	jge		1b
+	xorl	%eax, %eax						# pg_dir is at 0x0000
+	movl	%eax, %cr3						# cr3 - page directory start
+	movl	%cr0, %eax
+	orl		$0x80000000, %eax
+	movl	%eax,%cr0						# set paging (PG) bit */
+	ret										# this also flushes prefetch-queue
+
+
+
+	# Default Interrupt Handler (Will be overwritten later)
+default_int:
+	incb	0xb8000+160						# put something on the screen
+	movb	$0x02, 0xb8000+161				# so that we know something
+	iret									# happened
+
+msg:
+	.ascii "Welcome to protected mode"
+	.byte 0
+
+	.org	0x1000
+_pt0:
+
+	.org	0x2000
+_pt1:
+
+	.org	0x3000
+_pt2:
+
+	.org	0x4000
+idt_descr:
+	.word 256*8-1							# idt contains 256 entries with each 8 Byte
+	.long _idt
+
+gdt_descr:
+	.word 256*8-1							# gdt contains 256 entries with each 8 Byte 
+	.long _gdt
+
+_idt:
+	.fill 256,8,0							# idt is uninitialized
+
+_gdt:	
+	.quad 0x0000000000000000				# NULL descriptor
+	.quad 0x00c09a007e0007ff				# Kernel code
+	.quad 0x00c092007e0007ff				# Kernel data
+	.quad 0x0000000000000000				# Temporary
+	.fill 252,8,0							# Reserved for LDT and TSS
