@@ -85,7 +85,10 @@ void term_print(const char* str)
 		term_putc(str[i]);
 }
  
- 
+void why(char m)
+{
+	vga_buffer[0] = ((uint16_t)term_color << 8) | m;
+}
  
 // This is our kernel's main function
 void kernel_main()
@@ -96,8 +99,9 @@ void kernel_main()
 	//term_init();
  
 	// Display some messages
-	vga_buffer[0] = ((uint16_t)term_color << 8) | 'A';
-	//term_print("Hello Kernel");
+	//vga_buffer[0] = ((uint16_t)term_color << 8) | 'A';
+	char a = 'T';
+	why(a);
 	//term_print("Hello, World!\n");
 	//term_print("Welcome to the kernel.\n");
 }

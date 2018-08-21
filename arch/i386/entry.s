@@ -24,17 +24,22 @@ stack_top:
 
 begin:
 .extern kernel_main
-.globl _start, _gdt, _idt
+.globl start, _gdt, _idt
 
-.set CODE_SELECTOR, 0x08
-.set DATA_SELECTOR, 0x10
+.set CODE_SELECTOR,  0x08
+.set DATA_SELECTOR,  0x10
+.set STACK_SELECTOR, 0X18
 .set DISPLAY_ADDR,  0xb8000
 
 _pg_dir:
 
-_start:
+start:
 	movw	$DATA_SELECTOR, %ax
 	movw	%ax, %ds
+	movw	%ax, %es
+	movw	%ax, %gs
+	movw	$STACK_SELECTOR, %ax
+	movw	%ax, %ss
 
 	movw	$0x3D4, %dx       # Tell the control I/O port to get the higher byte of
 	movb	$0x0E, %al        # the cursor offset

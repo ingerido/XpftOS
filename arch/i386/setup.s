@@ -25,8 +25,9 @@ begin:
 .set MEM_MAP_OFFSET,  0x9000
 .set KERNEL_P_OFFSET, 0x100000
 
-.set CODE_SELECTOR, 0x08
-.set DATA_SELECTOR, 0x10
+.set CODE_SELECTOR,  0x08
+.set DATA_SELECTOR,  0x10
+.set STACK_SELECTOR, 0X18
 
 _start:
 	movw 	%cs, %ax
@@ -233,15 +234,22 @@ check_a20__exit:
 gdt:
 	.word	0,0,0,0				# dummy
 
-	# Kernel Code Segment for entry.s
+	# Kernel Code Segment for provisioning kernel
 gdt_code:
 	.word	0x07ff				# 8Mb - limit = 2047 (2048*4096 = 8Mb)
 	.word	0x0000				# base address = 0x0000
 	.word	0x9a00				# code read/exec
 	.word	0x00c0				# granularity = 4096, 386
 
-	# Kernel Data Segment for entry.s
+	# Kernel Data Segment for provisioning kernel
 gdt_data:
+	.word	0x07ff				# 8Mb - limit = 2047 (2048*4096 = 8Mb)
+	.word	0x0000				# base address = 0x0000
+	.word	0x9200				# data read/write
+	.word	0x00c0				# granularity = 4096, 386
+
+	# Kernel Stack Segment for provisioning kernel
+gdt_stack:
 	.word	0x07ff				# 8Mb - limit = 2047 (2048*4096 = 8Mb)
 	.word	0x0000				# base address = 0x0000
 	.word	0x9200				# data read/write
