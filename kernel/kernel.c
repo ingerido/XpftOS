@@ -11,7 +11,7 @@
 #endif
  
 // This is the x86's VGA textmode buffer. To display text, we write data to this memory location
-volatile uint16_t* vga_buffer = (uint16_t*)0xb8000;
+volatile uint16_t* vga_buffer = (uint16_t*)0xc00b8000;
 // By default, the VGA textmode buffer has a size of 80x25 characters
 const int VGA_COLS = 80;
 const int VGA_ROWS = 25;
@@ -99,9 +99,7 @@ void kernel_main()
 	//term_init();
  
 	// Display some messages
-	//vga_buffer[0] = ((uint16_t)term_color << 8) | 'A';
-	char a = 'T';
-	why(a);
+	why('S');
 	//term_print("Hello, World!\n");
 	//term_print("Welcome to the kernel.\n");
 }

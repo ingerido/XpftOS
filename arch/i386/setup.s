@@ -27,7 +27,6 @@ begin:
 
 .set CODE_SELECTOR,  0x08
 .set DATA_SELECTOR,  0x10
-.set STACK_SELECTOR, 0X18
 
 _start:
 	movw 	%cs, %ax
@@ -80,7 +79,7 @@ e820_skip:
 
 succ_e820:
 	movw 	$s_msg, %bp
-	movw 	$0x0007, %cx
+	movw 	$0x000c, %cx
 	movw 	$0x1301, %ax
 	movw 	$0x0007, %bx
 	movw	$0x0d00, %dx
@@ -90,7 +89,7 @@ succ_e820:
 
 fail_e820:
 	movw 	$f_msg, %bp
-	movw 	$0x0004, %cx
+	movw 	$0x0009, %cx
 	movw 	$0x1301, %ax
 	movw 	$0x0007, %bx
 	movw	$0x0d00, %dx
@@ -116,7 +115,7 @@ read:
 	movw	%ax, %es
 	xorw	%bx, %bx
 	movb	$0x02, %ah
-	movb	$0x09, %al
+	movb	$0x29, %al
 	xorb	%ch, %ch
 	movb	$0x03, %cl
 	xorw	%dx, %dx
@@ -143,7 +142,7 @@ read:
 	movw	%ax, %es
 	xorw	%si, %si
 	movw	$0x10, %di
-	movw	$0x480, %cx			# movsl moves 4 bytes, so need 4608/4=1152 here
+	movw	$0x1480, %cx			# movsl moves 4 bytes, so need 4608/4=1152 here
 	rep
 	movsl
 	popw	%es
@@ -248,13 +247,6 @@ gdt_data:
 	.word	0x9200				# data read/write
 	.word	0x00c0				# granularity = 4096, 386
 
-	# Kernel Stack Segment for provisioning kernel
-gdt_stack:
-	.word	0x07ff				# 8Mb - limit = 2047 (2048*4096 = 8Mb)
-	.word	0x0000				# base address = 0x0000
-	.word	0x9200				# data read/write
-	.word	0x00c0				# granularity = 4096, 386
-
 gdt_48:
 	.word	gdt_48 - gdt		# gdt limit = 2048, 256 GDT entries
 	.word	gdt,0				# gdt base = 0x0000
@@ -264,10 +256,10 @@ idt_48:
 	.word	0,0					# idt base = 0L
 
 f_msg:
-	.ascii "fail"
+	.ascii "e820 fail"
 
 s_msg:
-	.ascii "success"
+	.ascii "e820 success"
 
 msg3:
 	.ascii "loading kernel image"
