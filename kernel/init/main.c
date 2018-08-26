@@ -13,6 +13,7 @@
  *	Kernel entry main()
  */
 void kernel_main() {
+	init_tty_io();
 	tty_put_s("Hello, World!\n");
-	tty_put_s("Welcome to the kernel.\n");	
+	tty_put_s("Welcome to the kernel.\n");
 }

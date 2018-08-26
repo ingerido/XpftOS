@@ -6,6 +6,9 @@
  *
  *  TTY related
  */
+#ifndef _TTY_H
+#define _TTY_H
+
 #include <stddef.h>
 #include <stdint.h>
  
@@ -27,7 +30,9 @@ void enable_cursor(uint8_t cursor_start, uint8_t cursor_end);
 
 void disable_cursor();
 
-void update_cursor(uint8_t x, uint8_t y);
+uint16_t get_cursor();
+
+void update_cursor();
 
 /* tty io */
 void init_tty_io();
@@ -36,3 +41,4 @@ void tty_put_c(char c);
 
 void tty_put_s(const char* str);
 
+#endif

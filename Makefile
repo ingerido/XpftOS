@@ -32,5 +32,6 @@ kernel/kernel.o:
 	(cd kernel; make)
 
 clean:
-	rm arch/i386/*.o arch/i386/*.img arch/i386/boot arch/i386/setup
 	(cd kernel;make clean)
+	rm arch/i386/*.o arch/i386/boot arch/i386/setup
+	rm arch/i386/*.img 

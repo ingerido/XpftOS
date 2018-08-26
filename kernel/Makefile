@@ -15,8 +15,9 @@ kernel.o: $(OBJS)
 init/init.o: core/tty.o
 	$(CC) $(CFLAGS) -c init/main.c -o init/init.o
 
-core/tty.o: core/tty.c ../include/kernel/core/tty.h
+core/tty.o: core/tty.c
 	$(CC) $(CFLAGS) -c core/tty.c -o core/tty.o
 
 clean:
-	rm kernel.o kImage init/init.o core/tty.o
+	rm kernel.o init/init.o core/tty.o
+	rm kImage

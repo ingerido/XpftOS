@@ -9,6 +9,8 @@
 
 #include <stddef.h>
 #include <stdint.h>
+
+#include <kernel/core/io.h>
 #include <kernel/core/tty.h>
  
 // First, let's do some basic checks to make sure we are using our x86-elf cross-compiler correctly
@@ -18,40 +20,53 @@
 	#error "This code must be compiled with an x86-elf compiler"
 #endif
 
-static volatile uint16_t* vga_buffer = (uint16_t*)VGA_BUF;
+volatile uint16_t* vga_buffer = (uint16_t*)VGA_BUF;
 
 // We start displaying text in the top-left of the screen (column = 0, row = 0)
-int term_col = 0;
-int term_row = 0;
+uint8_t term_col = 0;
+uint8_t term_row = 0;
 uint8_t term_color = 0x0F; // Black background, White foreground
+
 
 /* cursor related */
 void enable_cursor(uint8_t cursor_start, uint8_t cursor_end) {
-	/*outb(0x3D4, 0x0A);
+	outb(0x3D4, 0x0A);
 	outb(0x3D5, (inb(0x3D5) & 0xC0) | cursor_start);
  
 	outb(0x3D4, 0x0B);
-	outb(0x3D5, (inb(0x3E0) & 0xE0) | cursor_end);*/
+	outb(0x3D5, (inb(0x3E0) & 0xE0) | cursor_end);
 }
 
 void disable_cursor() {
-	/*outb(0x3D4, 0x0A);
-	outb(0x3D5, 0x20);*/
+	outb(0x3D4, 0x0A);
+	outb(0x3D5, 0x20);
 }
 
-void update_cursor(uint8_t x, uint8_t y) {
-	/*uint16_t pos = y * VGA_WIDTH + x;
+uint16_t get_cursor() {
+	uint16_t pos = 0;
+
+	outb(0x3D4, 0x0E);
+	pos = inb(0x3D5) << 8;
+	outb(0x3D4, 0x0F);
+	pos = pos | inb(0x3D5);
+	return pos;
+}
+
+void update_cursor() {
+	uint16_t pos = term_row * VGA_COLS + term_col;
  
 	outb(0x3D4, 0x0F);
 	outb(0x3D5, (uint8_t) (pos & 0xFF));
 	outb(0x3D4, 0x0E);
-	outb(0x3D5, (uint8_t) ((pos >> 8) & 0xFF));*/
+	outb(0x3D5, (uint8_t) ((pos >> 8) & 0xFF));
 }
 
 /* tty io */
 void init_tty_io() {
-
-}
+	uint16_t pos = get_cursor();
+	term_col = pos % VGA_COLS;
+	term_row = pos / VGA_COLS + 1;
+}	
 
 void tty_put_c(char c) {
 	// Remember - we don't want to display ALL characters!
@@ -82,6 +97,8 @@ void tty_put_c(char c) {
 		term_col = 0;
 		term_row = 0;
 	}
+
+	update_cursor();
 }
 
 void tty_put_s(const char* str) {
