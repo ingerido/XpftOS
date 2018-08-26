@@ -16,6 +16,10 @@
 	.globl _gdt, _idt, _k_pg_dir
 
 	.align 64
+msg:
+	.ascii "Entering protected mode"
+	.byte 0
+
 _gdt:
 	.quad 0x0000000000000000				# NULL descriptor
 	.quad 0x00c09a00000007ff				# Kernel code
@@ -131,8 +135,7 @@ end_disp:
 	orl		$0x80000000, %eax
 	movl	%eax,%cr0						# set paging (PG) bit */
 
-# Now we have a C-worthy (haha!) environment ready to run the rest of our kernel.
-# At this point, we can call our main C function.
+# Now jump to C-written environment and be ready to run the rest of our kernel.
 	call kernel_main
 
 # If, by some mysterious circumstances, the kernel's C code ever returns, all we want to do is to hang the CPU
@@ -141,10 +144,4 @@ hang:
 	hlt      # Halt the CPU
 	jmp hang # If that didn't work, loop around and try again.
 
-
-msg:
-	.ascii "Entering protected mode"
-	.byte 0
-
-	.fill	(512-(.-begin)), 1, 0
 

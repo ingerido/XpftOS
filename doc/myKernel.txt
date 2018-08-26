@@ -1,0 +1,16 @@
+/arch
+/fs
+/include
+/kernel
+/lib
+/mm
+
+process:
+*1. gcc cross compile env
+*2. boot and early setup -> boot.s, setup.s
+*3. setup stack and paging -> entry.s
+*4. setup ASM and C hybrid programming
+*5. vga buffer and tty console support
+6. interal functions like printk
+7. memory management
+8. process and thread support
