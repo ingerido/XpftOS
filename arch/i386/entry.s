@@ -144,4 +144,5 @@ hang:
 	hlt      # Halt the CPU
 	jmp hang # If that didn't work, loop around and try again.
 
+# Should never be here
 

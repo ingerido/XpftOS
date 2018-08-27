@@ -3,3 +3,4 @@
 9000:		 phy mm map
  ...
 100000: 	 kernel starts
+101000:		 _gdt _ldt provisional PT
