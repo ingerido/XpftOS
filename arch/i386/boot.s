@@ -32,7 +32,7 @@ _start:
 	movw 	$msg1, %bp
 	movw 	$0x0011, %cx
 	movw 	$0x1301, %ax
-	movw 	$0x0007, %bx
+	movw 	$0x000f, %bx
 	movw	$0x0900, %dx
 	int		$0x10
 

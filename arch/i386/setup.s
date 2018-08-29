@@ -125,7 +125,7 @@ read:
 	popw	%es
 
 	movw 	$msg3, %bp
-	movw 	$0x0018, %cx
+	movw 	$0x001b, %cx
 	movw 	$0x1301, %ax
 	movw 	$0x0007, %bx
 	movw	$0x0c00, %dx
@@ -262,7 +262,7 @@ s_msg:
 	.ascii "e820 success"
 
 msg3:
-	.ascii "loading kernel image"
+	.ascii "loading kernel image..."
 	.byte	13,10,13,10
 
 fill:	

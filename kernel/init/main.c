@@ -10,19 +10,20 @@
 #include "kernel/core/tty.h"
 
 const size_t e820_size = 24;
-volatile int* phy_mm_map = (int*)0xc0009000;
+int* phy_mm_map = (int*)0xc0009000;
 
 void show_mem() {
 	tty_put_s("e820: BIOS-Provided physical memory map:\n", 0x0e);
 
 	int* phy_mm_st = phy_mm_map;
+	uint32_t base_addr_low, base_addr_high, length_low, length_high, type;
+
 	while (*(phy_mm_st + 5)) {
-		int base_addr_low  = *phy_mm_st;
-		int base_addr_high = *(phy_mm_st + 1);
-		int length_low  = *(phy_mm_st + 2);
-		int length_high = *(phy_mm_st + 3);
-		int type = *(phy_mm_st + 4);
-		int size = *(phy_mm_st + 5);
+		base_addr_low  = *phy_mm_st;
+		base_addr_high = *(phy_mm_st + 1);
+		length_low  = *(phy_mm_st + 2);
+		length_high = *(phy_mm_st + 3);
+		type = *(phy_mm_st + 4);
 
 		tty_put_s("BIOS-e820: [mem ", 0x07);
 
@@ -64,6 +65,7 @@ void kernel_main() {
 	tty_put_s("Welcome to the kernel.\n", 0x07);
 
 	show_mem();
+	//tty_put_i(0xffffffff, 0x07);
 
 	// init_paging();
 

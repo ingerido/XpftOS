@@ -101,7 +101,12 @@ void tty_put_c(char c, uint8_t color) {
 	update_cursor();
 }
 
-void tty_put_i(int i, uint8_t color) {
+void tty_put_s(const char* str, uint8_t color) {
+	for (size_t i = 0; str[i] != '\0'; i ++) // Keep placing characters until we hit the null-terminating character ('\0')
+		tty_put_c(str[i], color);
+}
+
+void tty_put_i(uint32_t i, uint8_t color) {
 	char c[8] = {0};
 	int8_t cnt = -1;
 	size_t index = 0;
@@ -132,10 +137,5 @@ void tty_put_i(int i, uint8_t color) {
 		cnt --;
 		update_cursor();
 	}
-}
-
-void tty_put_s(const char* str, uint8_t color) {
-	for (size_t i = 0; str[i] != '\0'; i ++) // Keep placing characters until we hit the null-terminating character ('\0')
-		tty_put_c(str[i], color);
 }
 
