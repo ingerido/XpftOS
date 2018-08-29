@@ -82,7 +82,7 @@ succ_e820:
 	movw 	$0x000c, %cx
 	movw 	$0x1301, %ax
 	movw 	$0x0007, %bx
-	movw	$0x0d00, %dx
+	movw	$0x0b00, %dx
 	int		$0x10
 	# halt
 	jmp		end_e820
@@ -92,7 +92,7 @@ fail_e820:
 	movw 	$0x0009, %cx
 	movw 	$0x1301, %ax
 	movw 	$0x0007, %bx
-	movw	$0x0d00, %dx
+	movw	$0x0b00, %dx
 	int		$0x10
 	# halt
 	jmp		.	
@@ -128,7 +128,7 @@ read:
 	movw 	$0x0018, %cx
 	movw 	$0x1301, %ax
 	movw 	$0x0007, %bx
-	movw	$0x0f00, %dx
+	movw	$0x0c00, %dx
 	int		$0x10
 
 	#jmp		.

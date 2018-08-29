@@ -37,8 +37,10 @@ void update_cursor();
 /* tty io */
 void init_tty_io();
 
-void tty_put_c(char c);
+void tty_put_c(char c, uint8_t color);
 
-void tty_put_s(const char* str);
+void tty_put_i(int i, uint8_t color);
+
+void tty_put_s(const char* str, uint8_t color);
 
 #endif

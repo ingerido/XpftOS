@@ -68,7 +68,7 @@ void init_tty_io() {
 	term_row = pos / VGA_COLS + 1;
 }	
 
-void tty_put_c(char c) {
+void tty_put_c(char c, uint8_t color) {
 	// Remember - we don't want to display ALL characters!
 	switch (c) {
 		case '\n': // Newline characters should return the column to 0, and increment the row
@@ -80,7 +80,7 @@ void tty_put_c(char c) {
 		default: // Normal characters just get displayed and then increment the column
 		{
 			const size_t index = (VGA_COLS * term_row) + term_col; // Like before, calculate the buffer index
-			vga_buffer[index] = ((uint16_t)term_color << 8) | c;
+			vga_buffer[index] = ((uint16_t)color << 8) | c;
 			term_col ++;
 			break;
 		}
@@ -101,8 +101,41 @@ void tty_put_c(char c) {
 	update_cursor();
 }
 
-void tty_put_s(const char* str) {
+void tty_put_i(int i, uint8_t color) {
+	char c[8] = {0};
+	int8_t cnt = -1;
+	size_t index = 0;
+	while (i) {
+		uint8_t tmp = i % 0x10;
+
+		cnt ++;
+
+		if (tmp <= 9) {
+			c[cnt] = tmp + 0x30;
+		} else {
+			c[cnt] = tmp % 0x0a + 0x61;
+		}
+		i /= 0x10;
+	}
+
+	for (int j = 7; j > cnt; --j) {
+		index = (VGA_COLS * term_row) + term_col;
+		vga_buffer[index] = ((uint16_t)color << 8) | 0x30;
+		term_col ++;
+		update_cursor();
+	}
+
+	while (cnt >= 0) {
+		index = (VGA_COLS * term_row) + term_col;
+		vga_buffer[index] = ((uint16_t)color << 8) | c[cnt];
+		term_col ++;
+		cnt --;
+		update_cursor();
+	}
+}
+
+void tty_put_s(const char* str, uint8_t color) {
 	for (size_t i = 0; str[i] != '\0'; i ++) // Keep placing characters until we hit the null-terminating character ('\0')
-		tty_put_c(str[i]);
+		tty_put_c(str[i], color);
 }
 

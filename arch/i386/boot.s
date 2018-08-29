@@ -63,7 +63,7 @@ read:
 	movw 	$0x0014, %cx
 	movw 	$0x1301, %ax
 	movw 	$0x0007, %bx
-	movw	$0x0b00, %dx
+	movw	$0x0a00, %dx
 	int		$0x10
 go:
 	jmp	$ZEROSEG, $0x7e00

@@ -17,7 +17,7 @@
 
 	.align 64
 msg:
-	.ascii "Entering protected mode"
+	.ascii "Entering protected mode..."
 	.byte 0
 
 _gdt:
