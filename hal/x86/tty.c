@@ -1,5 +1,5 @@
 /*
- *	/kernel/core/tty.c
+ *	arch/x86/tty.c
  * 
  *	Author: Yujie REN
  *	Date:	2017.8
@@ -10,8 +10,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include <kernel/core/io.h>
-#include <kernel/core/tty.h>
+#include <arch/x86/io.h>
+#include <arch/x86/tty.h>
  
 // First, let's do some basic checks to make sure we are using our x86-elf cross-compiler correctly
 #if defined(__linux__)

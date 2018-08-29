@@ -1,5 +1,5 @@
 /*
- *	/include/kernel/core/tty.h
+ *	/include/arch/x86/tty.h
  * 
  *	Author: Yujie REN
  *	Date:	2017.8
