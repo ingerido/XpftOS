@@ -19,6 +19,6 @@
 	#error "This code must be compiled with an x86-elf compiler"
 #endif
 
-void show_mem();
+void bios_mem();
 
 #endif

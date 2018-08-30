@@ -1,5 +1,5 @@
 /*
- *	arch/x86/e820.c
+ *	hal/x86/e820.c
  * 
  *	Author: Yujie REN
  *	Date:	2017.8
@@ -22,7 +22,7 @@
 const size_t e820_size = 24;
 int* phy_mm_map = (int*)0xc0009000;
 
-void show_mem() {
+void bios_mem() {
 	tty_put_s("e820: BIOS-Provided physical memory map:\n", 0x0e);
 
 	int* phy_mm_st = phy_mm_map;

@@ -7,18 +7,18 @@
  *  The init, OS entry is here
  */
 
-#include "arch/x86/tty.h"
-#include "arch/x86/e820.h"
+#include <hal/console.h>
+#include <hal/phy_mem.h>
 
 /*
  *	Kernel entry main()
  */
 void kernel_main() {
-	init_tty_io();
-	tty_put_s("Hello, World!\n", 0x07);
-	tty_put_s("Welcome to the kernel.\n", 0x07);
+	console_init();
+	console_write_string("Hello, World!\n", 0x07);
+	console_write_string("Welcome to the kernel.\n", 0x07);
 
-	show_mem();
+	get_phy_mem_map();
 
 	// init_paging();
 

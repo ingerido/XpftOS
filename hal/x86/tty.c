@@ -1,5 +1,5 @@
 /*
- *	arch/x86/tty.c
+ *	hal/x86/tty.c
  * 
  *	Author: Yujie REN
  *	Date:	2017.8
@@ -12,7 +12,7 @@
 
 #include <arch/x86/io.h>
 #include <arch/x86/tty.h>
- 
+
 // First, let's do some basic checks to make sure we are using our x86-elf cross-compiler correctly
 #if defined(__linux__)
 	#error "This code must be compiled with a cross-compiler"

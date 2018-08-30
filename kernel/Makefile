@@ -10,7 +10,7 @@ CFLAGS = -std=gnu99 -ffreestanding -I../include
 
 TARGET = x86
 
-OBJS = ../hal/$(TARGET)/arch.o init/init.o
+OBJS = ../hal/hal.o init/init.o
 
 kernel.o: $(OBJS)
 	$(LD) -r -o kernel.o $(OBJS)
