@@ -1,17 +1,17 @@
 /*
- *	hal/x86/tty.c
+ *	hal/x86/vga.c
  * 
  *	Author: Yujie REN
  *	Date:	2017.8
  *
- *  TTY related
+ *  VGA related
  */
 
 #include <stddef.h>
 #include <stdint.h>
 
 #include <arch/x86/io.h>
-#include <arch/x86/tty.h>
+#include <arch/x86/vga.h>
 
 // First, let's do some basic checks to make sure we are using our x86-elf cross-compiler correctly
 #if defined(__linux__)
@@ -62,13 +62,13 @@ void update_cursor() {
 }
 
 /* tty io */
-void init_tty_io() {
+void init_vga() {
 	uint16_t pos = get_cursor();
 	term_col = pos % VGA_COLS;
 	term_row = pos / VGA_COLS + 1;
 }	
 
-void tty_put_c(char c, uint8_t color) {
+void vga_put_c(char c, uint8_t color) {
 	// Remember - we don't want to display ALL characters!
 	switch (c) {
 		case '\n': // Newline characters should return the column to 0, and increment the row
@@ -101,12 +101,12 @@ void tty_put_c(char c, uint8_t color) {
 	update_cursor();
 }
 
-void tty_put_s(const char* str, uint8_t color) {
+void vga_put_s(const char* str, uint8_t color) {
 	for (size_t i = 0; str[i] != '\0'; i ++) // Keep placing characters until we hit the null-terminating character ('\0')
 		tty_put_c(str[i], color);
 }
 
-void tty_put_i(uint32_t i, uint8_t color) {
+void vga_put_i(uint32_t i, uint8_t color) {
 	char c[8] = {0};
 	int8_t cnt = -1;
 	size_t index = 0;

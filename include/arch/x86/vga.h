@@ -1,13 +1,13 @@
 /*
- *	/include/arch/x86/tty.h
+ *	/include/arch/x86/vga.h
  * 
  *	Author: Yujie REN
  *	Date:	2017.8
  *
- *  TTY related
+ *  VGA related
  */
-#ifndef _TTY_H
-#define _TTY_H
+#ifndef _VGA_H
+#define _VGA_H
 
 #include <stddef.h>
 #include <stdint.h>
@@ -34,13 +34,13 @@ uint16_t get_cursor();
 
 void update_cursor();
 
-/* tty io */
-void init_tty_io();
+/* vga */
+void init_vga();
 
-void tty_put_c(char c, uint8_t color);
+void vga_put_c(char c, uint8_t color);
 
-void tty_put_s(const char* str, uint8_t color);
+void vga_put_s(const char* str, uint8_t color);
 
-void tty_put_i(uint32_t i, uint8_t color);
+void vga_put_i(uint32_t i, uint8_t color);
 
 #endif

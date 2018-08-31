@@ -8,7 +8,7 @@
  */
 
 
-#include <arch/x86/tty.h>
+#include <arch/x86/vga.h>
 
 void get_phy_mem_map() {
 	bios_mem();

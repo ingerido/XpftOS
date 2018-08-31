@@ -1,5 +1,5 @@
 #
-#	/arch/i386/setup.s
+#	/boot/x86/setup.s
 #
 #	Author: Yujie REN
 #	Date:	2017.8

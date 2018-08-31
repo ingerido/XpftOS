@@ -8,13 +8,13 @@ CC = i686-elf-gcc
 
 CFLAGS = -std=gnu99 -ffreestanding -I../../include
 
-OBJS = tty.o e820.o
+OBJS = vga.o e820.o
 
 arch.o: $(OBJS)
 	$(LD) -r -o arch.o $(OBJS)
 
-tty.o:
-	$(CC) $(CFLAGS) -c tty.c -o tty.o
+vga.o:
+	$(CC) $(CFLAGS) -c vga.c -o vga.o
 
 e820.o:
 	$(CC) $(CFLAGS) -c e820.c -o e820.o

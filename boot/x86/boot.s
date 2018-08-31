@@ -1,5 +1,5 @@
 #
-#	/arch/i386/boot.s
+#	/boot/x86/boot.s
 #
 #	512 Byte Master Boot Record
 # 

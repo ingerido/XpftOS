@@ -1,5 +1,7 @@
 #
-#	Load 32 Kernel
+#	/boot/x86/entry.s
+#
+#	Kernel Entry
 # 
 #	Author: Yujie REN
 #	Date:	2017.8

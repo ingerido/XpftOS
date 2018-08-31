@@ -7,16 +7,16 @@
  *  The init, OS entry is here
  */
 
-#include <hal/console.h>
+#include <hal/tty.h>
 #include <hal/phy_mem.h>
 
 /*
  *	Kernel entry main()
  */
 void kernel_main() {
-	console_init();
-	console_write_string("Hello, World!\n", 0x07);
-	console_write_string("Welcome to the kernel.\n", 0x07);
+	tty_init();
+	tty_put_s("Hello, World!\n", 0x07);
+	tty_put_s("Welcome to the kernel.\n", 0x07);
 
 	get_phy_mem_map();
 
