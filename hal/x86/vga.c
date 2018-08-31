@@ -61,7 +61,7 @@ void update_cursor() {
 	outb(0x3D5, (uint8_t) ((pos >> 8) & 0xFF));
 }
 
-/* tty io */
+/* vga io */
 void init_vga() {
 	uint16_t pos = get_cursor();
 	term_col = pos % VGA_COLS;
@@ -103,7 +103,7 @@ void vga_put_c(char c, uint8_t color) {
 
 void vga_put_s(const char* str, uint8_t color) {
 	for (size_t i = 0; str[i] != '\0'; i ++) // Keep placing characters until we hit the null-terminating character ('\0')
-		tty_put_c(str[i], color);
+		vga_put_c(str[i], color);
 }
 
 void vga_put_i(uint32_t i, uint8_t color) {

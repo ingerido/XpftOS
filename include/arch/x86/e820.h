@@ -4,7 +4,7 @@
  *	Author: Yujie REN
  *	Date:	2017.8
  *
- *  TTY related
+ *  BIOS INT 15h AX=e820
  */
 #ifndef _E820_H
 #define _E820_H

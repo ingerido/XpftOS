@@ -7,8 +7,7 @@
  *  Get physical memory map
  */
 
-
-#include <arch/x86/vga.h>
+#include <hal/phy_mem.h>
 
 void get_phy_mem_map() {
 	bios_mem();

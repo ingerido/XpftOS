@@ -18,8 +18,9 @@
 begin:
 .globl _start
 
-.set BUFSEG, 0x1000
-.set IMGSEG, 0xffff
+.set ZEROSEG, 0x0000
+.set BUFSEG,  0x1000
+.set BUFSEG2, 0x2000
 
 .set STACK_POINTER,   0x8800
 .set MEM_MAP_OFFSET,  0x9000
@@ -101,6 +102,27 @@ end_e820:
 	popw	%bp
 	popw	%di	
 
+unreal:
+	# Move to Unreal Mode to get Memory Access more than 64KB above 1MB
+	cli
+	pushw	%ds      
+
+	lgdt	gdt_48
+
+	movl	%cr0, %eax
+	orl		$0x01, %eax
+	movl	%eax, %cr0
+
+	jmp		.+2
+	movw	$0x08, %bx
+	movw	%bx, %ds
+
+	andb	$0xFE, %al
+	movl	%eax, %cr0
+
+	popw	%ds
+	sti
+
 	# reset floppy drive
 reset:
 	xorw	%ax, %ax
@@ -115,13 +137,27 @@ read:
 	movw	%ax, %es
 	xorw	%bx, %bx
 	movb	$0x02, %ah
-	movb	$0x29, %al
+	movb	$0x80, %al
 	xorb	%ch, %ch
 	movb	$0x03, %cl
 	xorw	%dx, %dx
 	movb	$0x80, %dl
 	int		$0x13
 	jc		read
+
+read2:
+	movw	$BUFSEG2, %ax
+	movw	%ax, %es
+	xorw	%bx, %bx
+	movb	$0x02, %ah
+	movb	$0x21, %al
+	xorb	%ch, %ch
+	movb	$0x05, %cl
+	movb	$0x02, %dh
+	movb	$0x80, %dl
+	int		$0x13
+	jc		read2
+finish_read:
 	popw	%es
 
 	movw 	$msg3, %bp
@@ -138,11 +174,12 @@ read:
 	pushw	%es
 	movw	$BUFSEG, %ax
 	movw	%ax, %ds
-	movw	$IMGSEG, %ax
+	movw	$ZEROSEG, %ax
 	movw	%ax, %es
 	xorw	%si, %si
-	movw	$0x10, %di
-	movw	$0x1480, %cx			# movsl moves 4 bytes, so need 4608/4=1152 here
+	movl	$KERNEL_P_OFFSET, %edi
+	movw	$0x5080, %cx			# movsl moves 4 bytes, so need 0x1480 here
+	addr32
 	rep
 	movsl
 	popw	%es
