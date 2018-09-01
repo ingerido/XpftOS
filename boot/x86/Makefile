@@ -28,4 +28,4 @@ entry.o:
 	$(AS) -o entry.o entry.s
 
 clean:
-	rm -rf *.o boot setup kImage xfptOS.img
+	rm -rf *.o boot setup kImage xpftOS.img
