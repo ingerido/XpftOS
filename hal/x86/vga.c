@@ -11,6 +11,7 @@
 #include <stdint.h>
 
 #include <arch/x86/io.h>
+#include <arch/x86/mem.h>
 #include <arch/x86/vga.h>
 
 // First, let's do some basic checks to make sure we are using our x86-elf cross-compiler correctly

@@ -43,7 +43,7 @@ reset:
 	int		$0x13
 	jc		reset
 	
-	# read the second sector .aka load.s to 0x07e0:0x0000
+	# read the second sector .aka setup.s to 0x07e0:0x0000
 	pushw	%es
 read:
 	movw	$LOADSEG, %ax

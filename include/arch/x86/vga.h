@@ -19,9 +19,6 @@
 	#error "This code must be compiled with an x86-elf compiler"
 #endif
 
-
-#define VGA_BUF 0xC00B8000
-
 #define VGA_COLS 80
 #define VGA_ROWS 25
 

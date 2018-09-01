@@ -14,9 +14,9 @@ Image: boot.o setup.o entry.o ../../kernel/kernel.o
 	$(LD) --oformat=binary --Ttext 0x100000 --Tdata 0x110000 --Tbss 0x120000 -o kImage -nostdlib entry.o ../../kernel/kernel.o
 	#$(LD) --oformat=binary -T linker.ld -o kImage -nostdlib entry.o ../../kernel/kernel.o
 
-	dd if=boot   of=xfptOS.img seek=0 bs=512 count=1
-	dd if=setup  of=xfptOS.img seek=1 bs=512 count=1
-	dd if=kImage of=xfptOS.img seek=2 bs=512 count=161
+	dd if=boot   of=xpftOS.img seek=0 bs=512 count=1
+	dd if=setup  of=xpftOS.img seek=1 bs=512 count=1
+	dd if=kImage of=xpftOS.img seek=2 bs=512 count=169
 
 boot.o:
 	$(AS) -o boot.o boot.s

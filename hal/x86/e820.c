@@ -10,6 +10,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include <arch/x86/mem.h>
+#include <arch/x86/e820.h>
 #include <arch/x86/vga.h>
  
 // First, let's do some basic checks to make sure we are using our x86-elf cross-compiler correctly
@@ -20,7 +22,7 @@
 #endif
 
 const size_t e820_size = 24;
-int* phy_mm_map = (int*)0xc0009000;
+int* phy_mm_map = (int*)MEM_MAP;
 
 void bios_mem() {
 	vga_put_s("e820: BIOS-Provided physical memory map:\n", 0x0e);

@@ -10,6 +10,8 @@
 #include <hal/tty.h>
 #include <hal/phy_mem.h>
 
+uint32_t _k_stack_top = 0xc8000000;
+
 /*
  *	Kernel entry main()
  */

@@ -103,7 +103,7 @@ end_e820:
 	popw	%di	
 
 unreal:
-	# Move to Unreal Mode to get Memory Access more than 64KB above 1MB
+	# Move to Unreal Mode to get Memory Access more than 64KB above 1MB (0xFFFF:0xFFFF)
 	cli
 	pushw	%ds      
 
@@ -150,7 +150,7 @@ read2:
 	movw	%ax, %es
 	xorw	%bx, %bx
 	movb	$0x02, %ah
-	movb	$0x21, %al
+	movb	$0x29, %al
 	xorb	%ch, %ch
 	movb	$0x05, %cl
 	movb	$0x02, %dh
@@ -178,7 +178,7 @@ finish_read:
 	movw	%ax, %es
 	xorw	%si, %si
 	movl	$KERNEL_P_OFFSET, %edi
-	movw	$0x5080, %cx			# movsl moves 4 bytes, so need 0x1480 here
+	movw	$0x5480, %cx			# movsl moves 4 bytes, so need 0x1480 here
 	addr32
 	rep
 	movsl

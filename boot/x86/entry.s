@@ -50,15 +50,18 @@ _k_pt_0:
 _k_pt_1:
 
 	.org 0x4000
+_k_pt_2:
+
+	.org 0x5000
 
 # .bss contains data initialised to zeroes when the kernel is loaded
 .section .bss
 	# Our C code will need a stack to run. Here, we allocate 4096 bytes (or 4 Kilobytes) for our stack.
 	# We can expand this later if we want a larger stack. For now, it will be perfectly adequate.
 	.align 16
-stack_bottom:
+#stack_bottom:
 	.skip 0x1000	# Reserve a 4096-byte (4K) stack
-stack_top:
+#stack_top:
 
 # .text contains actual kernel codes
 .section .text
@@ -112,9 +115,6 @@ disp:
 end_disp:
 	#jmp		.
 
-# Setup Stack
-	mov		$stack_top, %esp # Set the stack pointer to the top of the stack
-
 # Setup Global Descriptor Table
 	lgdt	gdt_descr
 
@@ -124,6 +124,7 @@ end_disp:
 
 	movl	$_k_pt_0+7, _k_pg_dir+0xc00		# set present bit/user r/w
 	movl	$_k_pt_1+7, _k_pg_dir+0xc04
+	movl	$_k_pt_2+7, _k_pg_dir+0xc7c
 
 	movl	$_k_pt_1+4092, %edi
 	movl	$0x7ff007, %eax					# 8Mb - 4096 + 7 (r/w user,p)
@@ -131,11 +132,23 @@ end_disp:
 1:	stosl									# fill pages table entries
 	subl	$0x1000, %eax
 	jge		1b
+
+	movl	$_k_pt_2+4092, %edi
+	movl	$0x7fff007, %eax
+	std
+2:	stosl									# fill pages table entries
+	subl	$0x1000, %eax
+	cmpl	$0x7c00007, %eax
+	jne		2b
+
 	movl	$_k_pg_dir, %eax
 	movl	%eax, %cr3						# cr3 - page directory start
 	movl	%cr0, %eax
 	orl		$0x80000000, %eax
 	movl	%eax,%cr0						# set paging (PG) bit */
+
+# Setup Kernel Stack
+	mov		(_k_stack_top), %esp # Set the stack pointer to the top of the stack
 
 # Now jump to C-written environment and be ready to run the rest of our kernel.
 	call kernel_main

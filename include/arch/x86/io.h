@@ -1,11 +1,12 @@
 /*
- *	/include/kernel/core/io.h
+ *	/include/arch/x86/io.h
  * 
  *	Author: Yujie REN
  *	Date:	2017.8
  *
  *  I/O operation Wrapper
  */
+
 #ifndef _IO_H
 #define _IO_H
 

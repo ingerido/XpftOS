@@ -8,9 +8,6 @@
  */
 #ifndef _E820_H
 #define _E820_H
-
-#include <stddef.h>
-#include <stdint.h>
  
 // First, let's do some basic checks to make sure we are using our x86-elf cross-compiler correctly
 #if defined(__linux__)
