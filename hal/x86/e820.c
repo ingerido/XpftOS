@@ -20,6 +20,8 @@
 	#error "This code must be compiled with an x86-elf compiler"
 #endif
 
+e820_map _bios_mem_map;
+
 e820_entry* phy_mm_map = (e820_entry*)E820_MAP;
 
 /* BIOS INT 15h AX=e820 Get Memory Map */

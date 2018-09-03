@@ -64,7 +64,7 @@ begin:
 .set _k_pg_dir, 0x130000
 .set _k_pt_0,   0x131000
 .set _k_pt_1,   0x132000
-.set _k_pt_2,   0x133000
+.set _k_pt_2,   0x210000
 
 _start:
 	movw	$DATA_SELECTOR, %ax
@@ -116,7 +116,7 @@ end_disp:
 
 	movl	$_k_pt_0+7, _k_pg_dir+0xc00		# set present bit/user r/w
 	movl	$_k_pt_1+7, _k_pg_dir+0xc04
-	movl	$_k_pt_2+7, _k_pg_dir+0xc7c
+	movl	$_k_pt_2+7, _k_pg_dir+0xf7c
 
 	movl	$_k_pt_1+4092, %edi
 	movl	$0x7ff007, %eax					# 8Mb - 4096 + 7 (r/w user,p)

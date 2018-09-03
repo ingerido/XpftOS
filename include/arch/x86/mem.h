@@ -11,6 +11,7 @@
 #define _MEM_H
 
 #include <types.h>
+#include <arch/x86/e820.h>
 
 // First, let's do some basic checks to make sure we are using our x86-elf cross-compiler correctly
 #if defined(__linux__)
@@ -22,9 +23,14 @@
 /* Memory Location Define */
 #define E820_MAP  0xc0009000
 #define VGA_BUF   0xc00b8000
-#define KERN_PGD  0xc0130000
-#define STACK_TOP 0xc8000000
+#define K_PGD	  0xc0130000
+#define STACK_TOP 0xf8000000
 
+#define PAGE_SIZE_RG 4096
+#define PAGE_SIZE_EX 4194304
+#define PTE_NR 1024
+
+#define PAGE_MASK 0xfffff000
 
 extern void bios_mem_map();
 

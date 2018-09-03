@@ -11,6 +11,7 @@
 
 #include <arch/x86/mem.h>
 #include <arch/x86/vga.h>
+#include <kernel/mm.h>
  
 // First, let's do some basic checks to make sure we are using our x86-elf cross-compiler correctly
 #if defined(__linux__)
@@ -29,24 +30,34 @@ uint32_t _k_stack_top = STACK_TOP;
  * flush TLB
  */
 void paging_init() {
-	bios_mem_map();
+	int addr = 0, pt_addr = K_PGD + PAGE_SIZE_RG, mem_end = 896*1024*1024, tmp = 0;
 
-	while (address < end_mem) {
-		tmp = *(pg_dir + 768);		/* at virtual addr 0xC0000000 */
+	int *pg_dir = _k_pgd, *pg_table;
+
+	/* Get Physical Memory Map */
+	bios_mem_map();
+	
+	/* Fill Kernel Page Table for Directed Mapped Memory Area */
+	while (addr < mem_end) {
+		tmp = *(pg_dir + 0x300);
 		if (!tmp) {
-			tmp = start_mem | PAGE_TABLE;
-			*(pg_dir + 768) = tmp;
-			start_mem += PAGE_SIZE;
+			tmp = pt_addr | 0x07;
+			*(pg_dir + 0x300) = tmp;
+		} else {
+			vga_put_c('\n', 0x07);
+			vga_put_i((uint32_t) pt_addr, 0x07);
+			vga_put_c('\n', 0x07);
 		}
-		*pg_dir = tmp;			/* also map it in at 0x0000000 for init */
+		pt_addr += PAGE_SIZE_RG;
+		//*pg_dir = tmp;
 		pg_dir++;
-		pg_table = (unsigned long *) (tmp & PAGE_MASK);
-		for (tmp = 0 ; tmp < PTRS_PER_PAGE ; tmp++,pg_table++) {
-			if (address < end_mem)
-				*pg_table = address | PAGE_SHARED;
+		pg_table = (int *) (tmp & PAGE_MASK);
+		for (tmp = 0; tmp < PTE_NR; tmp++, pg_table++) {
+			if (addr < mem_end)
+				*pg_table = addr | 0x07;
 			else
 				*pg_table = 0;
-			address += PAGE_SIZE;
+			addr += PAGE_SIZE_RG;
 		}
 	}
 }

@@ -42,6 +42,5 @@ typedef struct e820_map {
 	e820_entry map[E820MAX];
 } e820_map;
 
-e820_map _bios_mem_map;
 
 #endif

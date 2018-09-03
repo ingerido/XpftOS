@@ -130,7 +130,7 @@ reset:
 	int		$0x13
 	jc		reset
 
-	# read the kImage to buffer addr 0x10000
+	# read kernel image to buffer addr 0x10000
 	# each INT 13h AX=02h could read at most 128(0x80) sectors
 	# --------------------------------------------------------
 	# AL: number of sectors to read (at most 128 sectors)
