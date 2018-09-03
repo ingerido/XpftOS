@@ -7,10 +7,8 @@
  *  The init, OS entry is here
  */
 
-#include <hal/tty.h>
-#include <hal/phy_mem.h>
-
-uint32_t _k_stack_top = 0xc8000000;
+#include <kernel/tty.h>
+#include <kernel/mm.h>
 
 /*
  *	Kernel entry main()
@@ -20,8 +18,6 @@ void kernel_main() {
 	tty_put_s("Hello, World!\n", 0x07);
 	tty_put_s("Welcome to the kernel.\n", 0x07);
 
-	get_phy_mem_map();
-
-	// init_paging();
+	paging_init();
 
 }

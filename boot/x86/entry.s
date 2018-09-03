@@ -9,13 +9,13 @@
 #   Setting up GDT, IDT
 #	Setting up Stack
 #   Setting up early stage Paging
-#	Copy The rest of Kernel Image
+#	Entering kernel main
 
 .code32
 
 # .data contains important data structure for the kernel
 .section .data
-	.globl _gdt, _idt, _k_pg_dir
+	.globl _gdt, _idt
 
 	.align 64
 msg:
@@ -27,32 +27,19 @@ _gdt:
 	.quad 0x00c09a00000007ff				# Kernel code
 	.quad 0x00c09200000007ff				# Kernel data
 	.quad 0x0000000000000000				# Temporary
-	.fill 28,8,0							# Reserved for LDT and TSS
+	.fill 252,8,0							# Reserved for LDT and TSS
 
 _idt:
-	.fill 32,8,0							# idt is uninitialized
+	.fill 256,8,0							# idt is uninitialized
 
 gdt_descr:
-	.word 32*8-1							# gdt contains 32 entries with each 8 Byte 
+	.word 256*8-1							# gdt contains 32 entries with each 8 Byte 
 	.long _gdt
 
 idt_descr:
-	.word 32*8-1							# idt contains 32 entries with each 8 Byte
+	.word 256*8-1							# idt contains 32 entries with each 8 Byte
 	.long _idt
 
-	.org 0x1000
-_k_pg_dir:
-
-	.org 0x2000
-_k_pt_0:
-
-	.org 0x3000
-_k_pt_1:
-
-	.org 0x4000
-_k_pt_2:
-
-	.org 0x5000
 
 # .bss contains data initialised to zeroes when the kernel is loaded
 .section .bss
@@ -60,7 +47,7 @@ _k_pt_2:
 	# We can expand this later if we want a larger stack. For now, it will be perfectly adequate.
 	.align 16
 #stack_bottom:
-	.skip 0x1000	# Reserve a 4096-byte (4K) stack
+#	.skip 0x1000	# Reserve a 4096-byte (4K) stack
 #stack_top:
 
 # .text contains actual kernel codes
@@ -73,6 +60,11 @@ begin:
 .set CODE_SELECTOR,  0x08
 .set DATA_SELECTOR,  0x10
 .set DISPLAY_ADDR,   0xb8000
+
+.set _k_pg_dir, 0x130000
+.set _k_pt_0,   0x131000
+.set _k_pt_1,   0x132000
+.set _k_pt_2,   0x133000
 
 _start:
 	movw	$DATA_SELECTOR, %ax
@@ -118,7 +110,7 @@ end_disp:
 # Setup Global Descriptor Table
 	lgdt	gdt_descr
 
-# Enable Paging and Setup 8MB memory for provisional kernel
+# Enable Paging and Setup 12MB memory for provisional kernel
 	movl	$_k_pt_0+7, _k_pg_dir			# set present bit/user r/w
 	movl	$_k_pt_1+7, _k_pg_dir+4
 

@@ -1,16 +1,15 @@
 /*
- *	/include/hal/tty.h
+ *	/include/kernel/tty.h
  * 
  *	Author: Yujie REN
  *	Date:	2017.8
  *
- *  tty HAL
+ *  TTY
  */
 #ifndef _TTY_H
 #define _TTY_H
 
-#include <stddef.h>
-#include <stdint.h>
+#include <types.h>
 
 /* arch specific function */
 extern void init_vga();

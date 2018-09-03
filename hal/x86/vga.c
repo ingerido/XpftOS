@@ -7,9 +7,7 @@
  *  VGA related
  */
 
-#include <stddef.h>
-#include <stdint.h>
-
+#include <types.h>
 #include <arch/x86/io.h>
 #include <arch/x86/mem.h>
 #include <arch/x86/vga.h>

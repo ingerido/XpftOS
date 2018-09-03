@@ -9,8 +9,7 @@
 #ifndef _VGA_H
 #define _VGA_H
 
-#include <stddef.h>
-#include <stdint.h>
+#include <types.h>
  
 // First, let's do some basic checks to make sure we are using our x86-elf cross-compiler correctly
 #if defined(__linux__)

@@ -80,7 +80,7 @@ e820_skip:
 
 succ_e820:
 	movw 	$s_msg, %bp
-	movw 	$0x000c, %cx
+	movw 	$0x0011, %cx
 	movw 	$0x1301, %ax
 	movw 	$0x0007, %bx
 	movw	$0x0b00, %dx
@@ -90,7 +90,7 @@ succ_e820:
 
 fail_e820:
 	movw 	$f_msg, %bp
-	movw 	$0x0009, %cx
+	movw 	$0x000e, %cx
 	movw 	$0x1301, %ax
 	movw 	$0x0007, %bx
 	movw	$0x0b00, %dx
@@ -131,6 +131,14 @@ reset:
 	jc		reset
 
 	# read the kImage to buffer addr 0x10000
+	# each INT 13h AX=02h could read at most 128(0x80) sectors
+	# --------------------------------------------------------
+	# AL: number of sectors to read (at most 128 sectors)
+	# CH: cylinder group number (?? head per cylinder group)
+	# CL: sector number to start (start from 1 instead of 0)
+	# DX: head number (63 sectors per track)
+	# DL: drive index
+	# --------------------------------------------------------
 	pushw	%es
 read:
 	movw	$BUFSEG, %ax
@@ -150,7 +158,7 @@ read2:
 	movw	%ax, %es
 	xorw	%bx, %bx
 	movb	$0x02, %ah
-	movb	$0x29, %al
+	movb	$0x09, %al
 	xorb	%ch, %ch
 	movb	$0x05, %cl
 	movb	$0x02, %dh
@@ -178,10 +186,8 @@ finish_read:
 	movw	%ax, %es
 	xorw	%si, %si
 	movl	$KERNEL_P_OFFSET, %edi
-	movw	$0x5480, %cx			# movsl moves 4 bytes, so need 0x1480 here
-	addr32
-	rep
-	movsl
+	movw	$0x4480, %cx			# movsl moves 4 bytes, so need 0x1480 here
+	addr32	rep movsl
 	popw	%es
 	popw	%ds
 
@@ -293,10 +299,10 @@ idt_48:
 	.word	0,0					# idt base = 0L
 
 f_msg:
-	.ascii "e820 fail"
+	.ascii "call e820 fail"
 
 s_msg:
-	.ascii "e820 success"
+	.ascii "call e820 success"
 
 msg3:
 	.ascii "loading kernel image..."

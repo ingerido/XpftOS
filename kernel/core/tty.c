@@ -7,7 +7,7 @@
  *  tty console HAL
  */
 
-#include <hal/tty.h>
+#include <kernel/tty.h>
 
 void tty_init() {
 	init_vga();
